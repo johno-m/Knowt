@@ -60,17 +60,6 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
         
         showRays()
         setUpGame()
-        print("freeplayGame = \(freeplayGame)")
-        if let isFreeplay = freeplayGame {
-            print("isFreeplay = \(isFreeplay)")
-            if isFreeplay.start {
-                print("FREEPLAY GAME")
-            } else {
-                print("STANDARD GAME")
-            }
-        } else {
-            print("STANDARD GAME")
-        }
         
         //Set up menu
         menu = InGameMenu(sS: CGSize(width: sW, height: sH))
@@ -119,8 +108,15 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
             eav = 2
         }
 
-        notesToAdd = findNotesForGame(staveType: usrInf.prefStave, numOfRounds: numOfRounds)
-        
+        if freeplayGame.start {
+            var noteSelection = [String : String]()
+            for note in freeplayGame.notes {
+                noteSelection[note] = usrInf.prefStave
+            }
+            notesToAdd = findNotesForGame(staveType: usrInf.prefStave, numOfRounds: numOfRounds, noteSelection: noteSelection)
+        } else {
+            notesToAdd = findNotesForGame(staveType: usrInf.prefStave, numOfRounds: numOfRounds, noteSelection: chooseNotes(staveType: usrInf.prefStave))
+        }
         
         print("|| notesToAdd == \(notesToAdd)")
         setUpScroll()
@@ -283,22 +279,11 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    func findNotesForGame(staveType: String, numOfRounds: Int) -> [GameNoteToAdd] {
+    func chooseNotes(staveType: String) -> [String : String] {
         
-        var list = [GameNoteToAdd]()
         var noteSelection = [String : String]()
         var allTrebleNotes = noteLevelList[usrInf.instrument]
         var allBassNotes = noteLevelList[usrInf.instrument]
-        
-        var notesInGame = [String : NoteInGame]()
-        
-        struct NoteInGame {
-            var noteScore : Int
-            var notePerc : Float
-            var noteWeight : Float //note weight is how much it needs to be worked on in a measurement from 0 to 100
-            var noteWeightPerc : Float
-            var stave: String
-        }
         if staveType == "treble" {
             for i in 0...usrInf.treblelevel {
                 for note in allTrebleNotes![i] {
@@ -313,7 +298,24 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
                 }
             }
         }
-        //print("noteSelection = \(noteSelection)")
+        
+        return noteSelection
+    }
+    
+    func findNotesForGame(staveType: String, numOfRounds: Int, noteSelection: [String : String]) -> [GameNoteToAdd] {
+        
+        var list = [GameNoteToAdd]()
+        var notesInGame = [String : NoteInGame]()
+        
+        struct NoteInGame {
+            var noteScore : Int
+            var notePerc : Float
+            var noteWeight : Float //note weight is how much it needs to be worked on in a measurement from 0 to 100
+            var noteWeightPerc : Float
+            var stave: String
+        }
+        
+        print("noteSelection = \(noteSelection)")
         // add all the scores together to get total
         // divide each score by the total
         // minus that number from 1 to make them opposite (small to large) and get adjusted percentage
@@ -336,11 +338,18 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
             }
             for note in noteSelection {
                 var noteScore = (trebleNotes[note.key]?.score)!
-                var notePerc:Float = round((Float(noteScore) / Float(totalTrebleScore))*100) //get the note percentage
+                var notePerc : Float!
+                if noteScore < 1 {
+                    notePerc = 0
+                } else {
+                    notePerc = round((Float(noteScore) / Float(totalTrebleScore))*100) //get the note percentage
+                }
+                
                 var noteWeight:Float = 100.0 - notePerc
                 notesInGame[note.key]?.notePerc = notePerc
                 notesInGame[note.key]?.noteWeight = noteWeight
                 print("\(note.key) percentage is \(notePerc)")
+                print("\(note.key) weight is \(noteWeight)")
             }
             for note in notesInGame {
                 totalTrebleWeightScore += note.value.noteWeight

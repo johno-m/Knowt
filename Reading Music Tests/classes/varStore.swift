@@ -22,9 +22,10 @@ var noteGameType = "none" // free or note
 struct gameStruct {
     var start: Bool
     var notes: [String]
+    var stave: String
 }
 
-var freeplayGame : gameStruct!
+var freeplayGame = gameStruct(start: false, notes: ["none"], stave: "none")
 
 // this is the variable that shows the final screen has been shown so you can stop it showing again
 var finalScreenPlayedOut = false

@@ -22,6 +22,7 @@ class selectNotesViewController: UIViewController {
     var titleLabel2 = UILabel()
     var sS = CGSize()
     var playBtn = PlayButton()
+    var changeClefBtn = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,14 +33,15 @@ class selectNotesViewController: UIViewController {
         
         scrollView = UIScrollView(frame: CGRect(x: 0, y: 20, width: sS.width, height: sS.height - 20))
         view.addSubview(scrollView)
-        stave = StaveView(spaceToFill: scrollView.frame, staveType: "treble", noteCount: trebleNotes.count, spacing: "compact")
+        stave = StaveView(spaceToFill: scrollView.frame, staveType: usrInf.prefStave, noteCount: trebleNotes.count, spacing: "compact")
         scrollView.addSubview(stave)
         scrollView.contentSize = CGSize(width: stave.frame.width, height: scrollView.frame.height)
         
         // get all the notes to show on stave and add them into an array
-        getNotes(staveType: "treble")
+        getNotes(staveType: usrInf.prefStave)
         
         addNotesToStave()
+        addChangeClefBtn()
         
         playBtn = PlayButton(frame: CGRect(x: sS.width*0.87, y: sS.height*0.83, width: sS.height*0.14, height: sS.height*0.14))
         playBtn.addTarget(self, action: #selector(playAction(_:)), for: .touchUpInside)
@@ -49,7 +51,7 @@ class selectNotesViewController: UIViewController {
     }
     
     @objc func playAction(_ sender:UIButton){
-        freeplayGame = gameStruct(start: true, notes: selectedNotes)
+        freeplayGame = gameStruct(start: true, notes: selectedNotes, stave: "treble")
         let nextViewController = self.storyboard?.instantiateViewController(withIdentifier: "gameViewController") as! gameViewController
         nextViewController.modalPresentationStyle = .fullScreen
         print("selectedNotes = \(selectedNotes)")
@@ -73,6 +75,32 @@ class selectNotesViewController: UIViewController {
         }
         
         print(notesToAdd)
+    }
+    
+    func addChangeClefBtn(){
+        changeClefBtn = UIButton(frame: CGRect(x: 0, y: 0, width: sS.width * 0.07, height: sS.width * 0.07))
+        if usrInf.prefStave == "treble" {
+            changeClefBtn.setImage(UIImage(named: "bassBtn"), for: .normal)
+        } else {
+            changeClefBtn.setImage(UIImage(named: "trebleBtn"), for: .normal)
+        }
+        changeClefBtn.center = CGPoint(x: sS.width * 0.094, y: sS.height * 0.8)
+        changeClefBtn.alpha = 0.7
+        scrollView.addSubview(changeClefBtn)
+        let buttonClick = UITapGestureRecognizer(target: self, action: #selector(self.changeClefClicked(recognizer:)))
+        changeClefBtn.addGestureRecognizer(buttonClick)
+    }
+    
+    @objc func changeClefClicked(recognizer : selectNoteTap) {
+        if usrInf.prefStave == "treble" {
+            usrInf.prefStave = "bass"
+        } else {
+            usrInf.prefStave = "treble"
+        }
+        saveUserInf()
+        let nextViewController = self.storyboard?.instantiateViewController(withIdentifier: "selectNotesViewController") as! selectNotesViewController
+        nextViewController.modalPresentationStyle = .fullScreen
+        self.present(nextViewController, animated: true, completion: nil)
     }
     
     @objc func handleTapFrom(recognizer : selectNoteTap)
