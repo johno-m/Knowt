@@ -683,12 +683,14 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
                 if cRC >= 6 { scoreAddition = 20 }
                 trebleNotes[note]!.correctRunningCount += 1
                 trebleNotes[note]!.incorrectRunningCount = 0
+                trebleNotes[note]!.correctCount += 1
             } else {
                 if iRC >= 3 { scoreAddition = -8 }
                 if iRC >= 5 { scoreAddition = -10 }
                 if iRC >= 6 { scoreAddition = -20 }
                 trebleNotes[note]!.correctRunningCount = 0
                 trebleNotes[note]!.incorrectRunningCount += 1
+                trebleNotes[note]!.incorrectCount += 1
             }
             
             trebleNotes[note]!.score += scoreAddition
@@ -701,12 +703,14 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
                 if cRC >= 3 { scoreAddition = 8 }
                 if cRC >= 5 { scoreAddition = 10 }
                 if cRC >= 6 { scoreAddition = 20 }
+                bassNotes[note]!.correctCount += 1
                 bassNotes[note]!.correctRunningCount += 1
                 bassNotes[note]!.incorrectRunningCount = 0
             } else {
                 if iRC >= 3 { scoreAddition = -8 }
                 if iRC >= 5 { scoreAddition = -10 }
                 if iRC >= 6 { scoreAddition = -20 }
+                bassNotes[note]!.incorrectCount += 1
                 bassNotes[note]!.correctRunningCount = 0
                 bassNotes[note]!.incorrectRunningCount += 1
             }
@@ -824,7 +828,7 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
         print(" ")
         for note in unlockedNotes {
             print("\(note) score is \((trebleNotes[note]?.score)!)")
-            if (trebleNotes[note]?.score)! < 200 {
+            if (trebleNotes[note]?.score)! < promotionThreshold {
                 doPromotion = false
             }
         }

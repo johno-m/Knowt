@@ -34,7 +34,7 @@ class StaveView : UIView {
         0.60
     ]
     
-    init(spaceToFill: CGRect, staveType: String, noteCount: Int, spacing: String){
+    init(spaceToFill: CGRect, staveType: String, noteCount: Int, spacing: String, showClef: Bool){
         
         self.gapSize = spaceToFill.height * 0.08
         if spacing == "compact" {
@@ -45,9 +45,6 @@ class StaveView : UIView {
         
         super.init(frame: CGRect(x: 0, y: 0, width: self.noteGap * CGFloat(noteCount + 3),  height: spaceToFill.height))
         
-        
-        
-        
         self.lineWidth = spaceToFill.height * 0.008
         for (i, point) in singleStaveY.enumerated() {
             let staveLine = StaveLine2(lineY: (spaceToFill.height * point), lineWidth: lineWidth, length: self.frame.width)
@@ -55,8 +52,7 @@ class StaveView : UIView {
             self.addSubview(staveLineArray[i])
         }
         
-        addClef(staveType: staveType)
-        
+        if showClef { addClef(staveType: staveType) }
     }
     
     func addClef(staveType: String){

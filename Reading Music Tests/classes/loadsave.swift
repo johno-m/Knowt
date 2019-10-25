@@ -24,12 +24,16 @@ func loadUserInf(){
     var prompts : [String : Bool]
     var loadSuccessful = true
     
+    var correctCount = [String : Int]()
+    var incorrectCount = [String : Int]()
     var correctRunningNotes = [String : Int]()
     var incorrectRunningNotes = [String : Int]()
     var noteScores = [String : Int]()
     var trebleResponseTimes = [String : [Double]]()
     var bassResponseTimes = [String : [Double]]()
     
+    var correctCount2 = [String : Int]()
+    var incorrectCount2 = [String : Int]()
     var correctRunningNotes2 = [String : Int]()
     var incorrectRunningNotes2 = [String : Int]()
     var noteScores2 = [String : Int]()
@@ -46,11 +50,13 @@ func loadUserInf(){
         "prompts" : false,
         "userTrebleMaxLevelReached" : false,
         "userBassMaxLevelReached" : false,
-        "correctNotes" : false,
-        "incorrectNotes" : false,
+        "correctCount" : false,
+        "incorrectCount" : false,
         "correctRunningNotes" : false,
         "incorrectRunningNotes" : false,
         "noteScores" : false,
+        "correctCount2" : false,
+        "incorrectCount2" : false,
         "correctRunningNotes2" : false,
         "incorrectRunningNotes2" : false,
         "noteScores2" : false,
@@ -219,11 +225,71 @@ func loadUserInf(){
                 bassNotes[note.key]?.score = 0
             }
         }
-        if saveKeys["instrument"]! {
-            
+        
+        // treble correct count
+        if saveKeys["correctCount"]! {
+            correctCount = uD.object(forKey: "correctCount") as! [String : Int]
+            for note in trebleNotes {
+                if let loadedValue = correctCount[note.key] {
+                    trebleNotes[note.key]?.correctCount = correctCount[note.key]!
+                } else {
+                    trebleNotes[note.key]?.correctCount = 0
+                }
+            }
         } else {
-            
+            for note in trebleNotes {
+                trebleNotes[note.key]?.correctCount = 0
+            }
         }
+        
+        // treble incorrect count
+        if saveKeys["incorrectCount"]! {
+            incorrectCount = uD.object(forKey: "incorrectCount") as! [String : Int]
+            for note in trebleNotes {
+                if let loadedValue = correctCount[note.key] {
+                    trebleNotes[note.key]?.incorrectCount = incorrectCount[note.key]!
+                } else {
+                    trebleNotes[note.key]?.incorrectCount = 0
+                }
+            }
+        } else {
+            for note in trebleNotes {
+                trebleNotes[note.key]?.incorrectCount = 0
+            }
+        }
+        
+        // bass correct count
+        if saveKeys["correctCount2"]! {
+            correctCount2 = uD.object(forKey: "correctCount2") as! [String : Int]
+            for note in bassNotes {
+                if let loadedValue = correctCount2[note.key] {
+                    bassNotes[note.key]?.correctCount = correctCount2[note.key]!
+                } else {
+                    bassNotes[note.key]?.correctCount = 0
+                }
+            }
+        } else {
+            for note in bassNotes {
+                bassNotes[note.key]?.correctCount = 0
+            }
+        }
+        
+        // bass incorrect count
+        if saveKeys["incorrectCount2"]! {
+            incorrectCount2 = uD.object(forKey: "incorrectCount2") as! [String : Int]
+            for note in bassNotes {
+                if let loadedValue = correctCount2[note.key] {
+                    bassNotes[note.key]?.incorrectCount = incorrectCount2[note.key]!
+                } else {
+                    bassNotes[note.key]?.incorrectCount = 0
+                }
+            }
+        } else {
+            for note in bassNotes {
+                bassNotes[note.key]?.incorrectCount = 0
+            }
+        }
+        
         if saveKeys["instrument"]! {
             
         } else {
@@ -281,10 +347,15 @@ func saveUserInf(){
     
     var correctRunningNotes = [String : Int]()
     var incorrectRunningNotes = [String : Int]()
+    var correctCount = [String : Int]()
+    var incorrectCount = [String : Int]()
     var noteScores = [String : Int]()
     var trebleResponseTimes = [String : [Double]]()
     var bassResponseTimes = [String : [Double]]()
     
+    
+    var correctCount2 = [String : Int]()
+    var incorrectCount2 = [String : Int]()
     var correctRunningNotes2 = [String : Int]()
     var incorrectRunningNotes2 = [String : Int]()
     var noteScores2 = [String : Int]()
@@ -294,6 +365,8 @@ func saveUserInf(){
         incorrectRunningNotes[note.key] = note.value.incorrectRunningCount
         noteScores[note.key] = note.value.score
         trebleResponseTimes[note.key] = note.value.responseTimes
+        correctCount[note.key] = note.value.correctCount
+        incorrectCount[note.key] = note.value.incorrectCount
     }
     
     for note in bassNotes {
@@ -301,13 +374,21 @@ func saveUserInf(){
         incorrectRunningNotes2[note.key] = note.value.incorrectRunningCount
         noteScores2[note.key] = note.value.score
         bassResponseTimes[note.key] = note.value.responseTimes
+        correctCount2[note.key] = note.value.correctCount
+        incorrectCount2[note.key] = note.value.incorrectCount
     }
     
+    
+    uD.set(correctCount, forKey: "correctCount")
+    uD.set(incorrectCount, forKey: "incorrectCount")
     uD.set(correctRunningNotes, forKey: "correctRunningNotes")
     uD.set(incorrectRunningNotes, forKey: "incorrectRunningNotes")
     uD.set(noteScores, forKey: "noteScores")
     uD.set(trebleResponseTimes, forKey: "trebleResponseTimes")
     
+    
+    uD.set(correctCount2, forKey: "correctCount2")
+    uD.set(incorrectCount2, forKey: "incorrectCount2")
     uD.set(correctRunningNotes2, forKey: "correctRunningNotes2")
     uD.set(incorrectRunningNotes2, forKey: "incorrectRunningNotes2")
     uD.set(noteScores2, forKey: "noteScores2")

@@ -228,6 +228,7 @@
 		79CE3FF21F584B4C00205A21 /* notesTutorial2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CE3FF11F584B4C00205A21 /* notesTutorial2ViewController.swift */; };
 		79CE3FF81F58510400205A21 /* noteTestE3.png in Resources */ = {isa = PBXBuildFile; fileRef = 79CE3FF31F58510400205A21 /* noteTestE3.png */; };
 		79DF33511F5B1A3700370EB7 /* noteGameTitle.png in Resources */ = {isa = PBXBuildFile; fileRef = 79DF33501F5B1A3700370EB7 /* noteGameTitle.png */; };
+		79EAC04423608D6E00D31E36 /* progressViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EAC04323608D6E00D31E36 /* progressViewCell.swift */; };
 		79F5C3E3210F38C7006E896E /* noteProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F5C3E2210F38C7006E896E /* noteProgressViewController.swift */; };
 		79F5C3FD210F443B006E896E /* note_E4.png in Resources */ = {isa = PBXBuildFile; fileRef = 79F5C3E5210F443A006E896E /* note_E4.png */; };
 		79F5C3FE210F443B006E896E /* note_D1.png in Resources */ = {isa = PBXBuildFile; fileRef = 79F5C3E6210F443A006E896E /* note_D1.png */; };
@@ -538,6 +539,7 @@
 		79CE3FF11F584B4C00205A21 /* notesTutorial2ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = notesTutorial2ViewController.swift; path = ../notesTutorial2ViewController.swift; sourceTree = "<group>"; };
 		79CE3FF31F58510400205A21 /* noteTestE3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = noteTestE3.png; path = img/noteTutorial/noteTestE3.png; sourceTree = "<group>"; };
 		79DF33501F5B1A3700370EB7 /* noteGameTitle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = noteGameTitle.png; path = img/note/noteGameTitle.png; sourceTree = "<group>"; };
+		79EAC04323608D6E00D31E36 /* progressViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = progressViewCell.swift; sourceTree = "<group>"; };
 		79F5C3E2210F38C7006E896E /* noteProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = noteProgressViewController.swift; sourceTree = "<group>"; };
 		79F5C3E5210F443A006E896E /* note_E4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = note_E4.png; sourceTree = "<group>"; };
 		79F5C3E6210F443A006E896E /* note_D1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = note_D1.png; sourceTree = "<group>"; };
@@ -673,7 +675,6 @@
 				79A7CE151F59590A00325247 /* notesTutorial3ViewController.swift */,
 				7933B1B01F471F5100E1356D /* notesGameStartingViewController.swift */,
 				794D638A1F2773C90034B8EA /* notesViewController.swift */,
-				79F5C3E2210F38C7006E896E /* noteProgressViewController.swift */,
 				797029052119EC29003DD5C7 /* notePromoteViewController.swift */,
 				79624125211C840A001D196A /* noteEndGameViewController.swift */,
 				790331371F2E806F00B4CFFF /* notesEndViewController.swift */,
@@ -683,6 +684,7 @@
 				790A620D1F250D0600E4C422 /* Info.plist */,
 				790336CE2178CD580031F9E7 /* gameViewController.swift */,
 				79AF82DB215F8771002F28CD /* selectNotesViewController.swift */,
+				79F5C3E2210F38C7006E896E /* noteProgressViewController.swift */,
 			);
 			path = "Reading Music Tests";
 			sourceTree = "<group>";
@@ -904,6 +906,7 @@
 		798D0B7C21F7B06A002D05C8 /* classes */ = {
 			isa = PBXGroup;
 			children = (
+				79EAC04323608D6E00D31E36 /* progressViewCell.swift */,
 				798D0B7D21F7B089002D05C8 /* loadsave.swift */,
 				79CB220221FE04AE0001141A /* inGameMenu.swift */,
 				79CB220421FE05180001141A /* stave.swift */,
@@ -1386,6 +1389,7 @@
 				79CB220521FE05180001141A /* stave.swift in Sources */,
 				793911E92217069200EBFA84 /* drawNoteTutorial.swift in Sources */,
 				792D583D221B0EF60013377B /* BezierPath.swift in Sources */,
+				79EAC04423608D6E00D31E36 /* progressViewCell.swift in Sources */,
 				794D638B1F2773C90034B8EA /* notesViewController.swift in Sources */,
 				79B57960207B696F00911CD4 /* SpringTextView.swift in Sources */,
 				79B57970207B696F00911CD4 /* AsyncImageView.swift in Sources */,

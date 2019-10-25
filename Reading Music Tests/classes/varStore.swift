@@ -19,6 +19,8 @@ var allNoteStreak = 0
 var userMaxLevelReached:[Bool] = [false, false, false]
 var noteGameType = "none" // free or note
 
+var promotionThreshold = 200
+
 struct gameStruct {
     var start: Bool
     var notes: [String]
@@ -308,8 +310,10 @@ let noteLevelListBASS = [
     "Ukulele" : ukuleleNoteLevels,
     "None" : noneNoteLevels
 ]
-
+/** The list of all treble notes  */
 let noteList = ["E3","F3","G3","A3","B3","C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5", "B5" , "C6" ]
+
+/** The list of all bass  notes  */
 let noteList2 = ["E1","F1","G1","A1","B1","C1","D1","E2","F2","G2","A2","B2","C2","D2","E3","F3","G3","A3","B3"]
 let dualStaveNoteList = [
     ["B3","B1"],

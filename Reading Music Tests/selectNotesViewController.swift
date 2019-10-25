@@ -33,7 +33,7 @@ class selectNotesViewController: UIViewController {
         
         scrollView = UIScrollView(frame: CGRect(x: 0, y: 20, width: sS.width, height: sS.height - 20))
         view.addSubview(scrollView)
-        stave = StaveView(spaceToFill: scrollView.frame, staveType: usrInf.prefStave, noteCount: trebleNotes.count, spacing: "compact")
+        stave = StaveView(spaceToFill: scrollView.frame, staveType: usrInf.prefStave, noteCount: trebleNotes.count, spacing: "compact", showClef: true)
         scrollView.addSubview(stave)
         scrollView.contentSize = CGSize(width: stave.frame.width, height: scrollView.frame.height)
         
@@ -146,7 +146,11 @@ class selectNotesViewController: UIViewController {
                 selectedNotes.append(note.note)
             }
         }
-        print(selectedNotes)
+        if selectedNotes.count > 2 {
+            playBtn.show()
+        } else {
+            playBtn.hide()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -325,7 +329,22 @@ class PlayButton: UIButton {
         image = UIImageView()
         image.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
         image.image = UIImage(named: "playBtn")
+        self.alpha = 0
         self.addSubview(image)
     }
-
+    
+    func show(){
+        self.isUserInteractionEnabled = true
+        UIView.animate(withDuration: 1, delay:0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+            self.alpha = 1
+        })
+    }
+    
+    func hide(){
+        self.isUserInteractionEnabled = false
+        UIView.animate(withDuration: 1, delay:0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+            self.alpha = 0
+        })
+    }
+    
 }
