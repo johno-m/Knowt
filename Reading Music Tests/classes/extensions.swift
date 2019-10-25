@@ -76,5 +76,3 @@ func checkPromotionCriteria(stave: String) -> Bool {
     return result
 }
 
-
-

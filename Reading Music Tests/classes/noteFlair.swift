@@ -15,7 +15,7 @@ class NoteFlair : UIView {
     
     var flairText = SpringLabel()
     
-    init(note: Note, outcome: String, noteStreak: Int){
+    init(note: Note2, outcome: String, noteStreak: Int){
         super.init(frame: CGRect(x: 0, y: 0, width: note.frame.width * 5, height: note.frame.width * 1.5))
         self.backgroundColor = UIColor.clear
         flairText = SpringLabel(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height))
@@ -65,7 +65,7 @@ class NoteFlair : UIView {
         })
     }
     
-    func selectMessage(note: Note, outcome: String, noteStreak: Int) -> String {
+    func selectMessage(note: Note2, outcome: String, noteStreak: Int) -> String {
         var message = ""
         var storedNote = [String : noteStruct]()
         if note.stave == "treble" {

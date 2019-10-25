@@ -89,6 +89,11 @@ class NotePreviewView : UIView {
     
     func buildView(note: String, stave: String){
         lineWidth = 180 * 0.016
+        
+        //clean up for recycling
+        for view in self.subviews{
+            view.removeFromSuperview()
+        }
         for (i, point) in singleStaveY.enumerated() {
             let staveLine = StaveLine2(lineY: (180 * point), lineWidth: lineWidth, length: 110)
             staveLine.center.x = 70
@@ -96,9 +101,9 @@ class NotePreviewView : UIView {
             staveLineArray.append(staveLine)
             self.addSubview(staveLineArray[i])
         }
-        var noteGap = staveLineArray[1].lineY - staveLineArray[0].lineY
         
-        newNote = Note2(pos: 0, stave: usrInf.prefStave, note: note, gapSize: noteGap, noteGap: 35, stavePosition: trebleNotes[note]!.stavePosition, lineWidth: lineWidth, topLine: staveLineArray[0].lineY)
+        var noteGap = staveLineArray[1].lineY - staveLineArray[0].lineY
+        newNote = Note2(pos: 0, stave: usrInf.prefStave, note: note, gapSize: noteGap, noteGap: 35, stavePosition: trebleNotes[note]!.stavePosition, lineWidth: lineWidth, topLine: staveLineArray[0].lineY, stp: 70)
         self.addSubview(newNote)
         newNote.noteImage.tintColor = UIColor.white
     }

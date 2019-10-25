@@ -21,11 +21,11 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var bgImage: UIImageView!
     @IBOutlet weak var noteScroll: UIScrollView!
     @IBOutlet weak var goBackBtn: UIButton!
-    var noteStave : Stave!
+    var noteStave : StaveView!
     var staveLength : CGFloat!
     var barLines = [BarLine]()
     var gapToRemoveAtEnd:CGFloat = 0.0
-    var notesOnStave = [Note]() // note : Note, stave : String
+    var notesOnStave = [Note2]() // note : Note, stave : String
     var lineWidth : CGFloat!
     var rays = [BackgroundRay]()
     var lineCount:CGFloat = 0.0
@@ -39,7 +39,8 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
     var runningScore : Int!
     var buttonCircleGuide = ButtonCircleGuide()
     var noteButtons = [NoteButton]() //NoteButtons is the collection of buttons together
-    var topLayer = UIView() // top layer within noteScroll for the buttons to go in.
+    /** UIView placed on top of ScrollView so buttons appear above note, not below */
+    var topLayer = UIView()
     var noteButtonBGs = [NoteButtonsBG]()
     var trebleClefStartingPosition = CGFloat()
     var originalPositionSet = false
@@ -240,7 +241,7 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
             endScore = EndScore(numOfRounds: numOfRounds, scoreNum: 0)
             view.addSubview(endScore)
             endScore.show()
-            if usrInf.prefStave == "grand" { undoMoveClefs() }
+            
             showHighlights()
         }
         
@@ -255,27 +256,23 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func addNotesToStave(notesToAdd: [GameNoteToAdd], lineWidth: CGFloat, lineCount: CGFloat){
-        var i = 0
-        let trebleClefMid = (noteStave.topStave.frame.height / CGFloat(lineCount)) * CGFloat(6 - eav)
-        let bassClefMid = (noteStave.topStave.frame.height / CGFloat(lineCount)) * CGFloat(5 - eav)
-        var bassClefStave:UIView = noteStave.topStave
-        if usrInf.prefStave == "grand" {
-            bassClefStave = noteStave.bottomStave
-        }
         
-        notesOnStave = [Note]()
+        notesOnStave = [Note2]()
         
-        for note in notesToAdd {
+        for (i, note) in notesToAdd.enumerated() {
+            
+            var noteToAdd : noteStruct!
+            
             if note.stave == "treble" {
-                notesOnStave.append(Note(pos: i, stave: "treble", note: note.note, staveScale: noteStave.staveScale, stavePosition: (trebleNotes[note.note]?.stavePosition)!-(eav*2), lineWidth: lineWidth))
-                noteStave.topStave.addSubview(notesOnStave[notesOnStave.count-1])
-                notesOnStave[notesOnStave.count-1].holder = noteStave.topStave
+                noteToAdd = trebleNotes[note.note]
             } else {
-                notesOnStave.append(Note(pos: i, stave: "bass", note: note.note, staveScale: noteStave.staveScale, stavePosition: (bassNotes[note.note]?.stavePosition)!-(eav*2), lineWidth: lineWidth))
-                bassClefStave.addSubview(notesOnStave[notesOnStave.count-1])
-                notesOnStave[notesOnStave.count-1].holder = bassClefStave
+                noteToAdd = bassNotes[note.note]
+
             }
-            i += 1
+            
+            notesOnStave.append(Note2(pos: i, stave: note.stave, note: note.note, gapSize: noteStave.gapSize, noteGap: noteStave.noteGap, stavePosition: noteToAdd.stavePosition, lineWidth: noteStave.lineWidth, topLine: noteStave.staveLineArray[0].lineY, stp: noteStave.startingPos))
+            noteStave.addSubview(notesOnStave[notesOnStave.count-1])
+           
         }
     }
     
@@ -303,139 +300,60 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func findNotesForGame(staveType: String, numOfRounds: Int, noteSelection: [String : String]) -> [GameNoteToAdd] {
-        
+        /** Empty array to be filled with 100 notes */
+        var selectionList = [GameNoteToAdd]()
+        /** Final list of notes */
         var list = [GameNoteToAdd]()
+        /** List of the notes to be chosen from */
         var notesInGame = [String : NoteInGame]()
+        /** Total score of all the notes added together */
+        var totalScore:Float = 0
         
         struct NoteInGame {
             var noteScore : Int
-            var notePerc : Float
+            var notePerc : Float //note perc is how much of the total score this is
             var noteWeight : Float //note weight is how much it needs to be worked on in a measurement from 0 to 100
-            var noteWeightPerc : Float
             var stave: String
         }
         
-        print("noteSelection = \(noteSelection)")
-        // add all the scores together to get total
-        // divide each score by the total
-        // minus that number from 1 to make them opposite (small to large) and get adjusted percentage
-        // add those numbers together to get secondary total
-        // divide each adjusted percentage by the secondary total
-        // you will be left with the "weight" of each number
+        /** The trebleNotes or bassNotes variable */
+        var noteList:[String : noteStruct]!
         
-            // if the note selection is low enough to comfortably fit all notes in on balance then do it that way. Why not?
-            var totalTrebleScore = 0
-            var totalTrebleWeightScore:Float = 0.0
-            var totalTrebleWeight:Float = 0.0
-            
-            var plainNoteNameList = [String]()
-            
-            for note in noteSelection {
-                totalTrebleScore += (trebleNotes[note.key]?.score)!
-                print("\(note.key) score is \((trebleNotes[note.key]?.score)!)")
-                notesInGame[note.key] = NoteInGame(noteScore: (trebleNotes[note.key]?.score)!, notePerc: 0.0, noteWeight: 0.0, noteWeightPerc: 0.0, stave: "treble")
-                plainNoteNameList.append(note.key) // cant randomise through the note names so add all the note names to an array then randomise using that
-            }
-            for note in noteSelection {
-                var noteScore = (trebleNotes[note.key]?.score)!
-                var notePerc : Float!
-                if noteScore < 1 {
-                    notePerc = 0
-                } else {
-                    notePerc = round((Float(noteScore) / Float(totalTrebleScore))*100) //get the note percentage
-                }
-                
-                var noteWeight:Float = 100.0 - notePerc
-                notesInGame[note.key]?.notePerc = notePerc
-                notesInGame[note.key]?.noteWeight = noteWeight
-                print("\(note.key) percentage is \(notePerc)")
-                print("\(note.key) weight is \(noteWeight)")
-            }
-            for note in notesInGame {
-                totalTrebleWeightScore += note.value.noteWeight
-            }
-            for note in notesInGame {
-                notesInGame[note.key]!.noteWeightPerc = round((Float(note.value.noteWeight) / Float(totalTrebleWeightScore))*10)
-                totalTrebleWeight += notesInGame[note.key]!.noteWeightPerc
-            }
-            
-            
-            var repeatCount = 0
-            func removeAPoint(){
-                repeatCount += 1
-                if repeatCount < 100 {
-                    let randomNum = Int.random(in: 0 ... plainNoteNameList.count-1)
-                    let randomNote = plainNoteNameList[randomNum]
-                    if Int((notesInGame[randomNote]?.noteWeightPerc)!) > 0 {
-                        notesInGame[randomNote]?.noteWeightPerc -= 1
-                    } else {
-                        removeAPoint()
-                    }
-                } else {
-                    print("Had 100 tries to remove a note but failed. Game crash")
-                }
-            }
-            
-            print("")
-            print("--- CHECK THERE ARE ENOUGH NOTES ---")
-            print("")
-            
-            print("totalTrebleWeight = \(totalTrebleWeight)")
-            print("numOfRounds = \(numOfRounds)")
-            
-            print("")
-            print("--- CHECK THERE ARE ENOUGH NOTES ---")
-            print("")
-
-            if Int(totalTrebleWeight) != numOfRounds {
-                
-                
-                if Int(totalTrebleWeight) > numOfRounds {
-                    let offBalance = Int(totalTrebleWeight) - (numOfRounds)
-                    print("Too many notes to fill the rounds - offBalance: \(offBalance)")
-                    print("Int(totalTrebleWeight) \(Int(totalTrebleWeight))")
-                    var i = 0
-                    while i < offBalance {
-                        
-                        removeAPoint()
-                        i += 1
-                    }
-                }
-                
-                if Int(totalTrebleWeight) < numOfRounds {
-                    let offBalance = (numOfRounds) - Int(totalTrebleWeight)
-                    print("Not enough notes to fill the rounds")
-                    var i = 0
-                    while i < offBalance {
-                        let randomNum = Int.random(in: 0 ... plainNoteNameList.count-1)
-                        let randomNote = plainNoteNameList[randomNum]
-                        notesInGame[randomNote]?.noteWeightPerc += 1
-                        print("adding a point to \(randomNote)")
-                        i += 1
-                    }
-                }
-                
-            }
-            print(" ")
-            print("-------- NOTES HAVE BEEN CHOSEN --------")
-            print(" ")
-            
-            for note in noteSelection {
-                for _ in 1...Int((notesInGame[note.key]?.noteWeightPerc)!) {
-                    list.append(GameNoteToAdd(note: note.key, stave: note.value))
-                }
-            }
-            print("Notes in this game")
-            for item in list {
-                print(item)
-            }
-            
-            print(" ")
-            print("-------- NOTES HAVE BEEN CHOSEN --------")
-            print(" ")
-
-    
+        if staveType == "treble" {
+            noteList = trebleNotes
+        } else {
+            noteList = bassNotes
+        }
         
+        for note in noteSelection {
+            totalScore += Float(noteList[note.key]!.score)
+            print("\(note.key) score = \(noteList[note.key]!.score)")
+            notesInGame[note.key] = NoteInGame(noteScore: noteList[note.key]!.score, notePerc: 0, noteWeight: 0, stave: staveType)
+        }
+        print("Total Score = \(totalScore)")
+        
+        for note in noteSelection {
+            notesInGame[note.key]!.notePerc = round((Float(noteList[note.key]!.score) / totalScore)*100)
+            notesInGame[note.key]!.noteWeight = 100 - notesInGame[note.key]!.notePerc
+            print("Note \(note.key) notePerc = \(notesInGame[note.key]!.notePerc)")
+            print("Note \(note.key) noteWeight = \(notesInGame[note.key]!.noteWeight)")
+        }
+        
+        for note in notesInGame {
+            var i = 0
+            while i < Int(note.value.noteWeight) {
+                selectionList.append(GameNoteToAdd(note: note.key, stave: staveType))
+                i += 1
+            }
+        }
+        
+        var i = 0
+        while i < numOfRounds {
+            let randomNumber = Int.random(in: 0 ..< selectionList.count)
+            list.append(selectionList[randomNumber])
+            i += 1
+        }
+        print("Chosen Notes = \(list)")
         return list.shuffled()
         
     }
@@ -490,12 +408,12 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    func addButtonsToNote(note: Note, gameTurns: [GameTurn], turnNum: Int) {
+    func addButtonsToNote(note: Note2, gameTurns: [GameTurn], turnNum: Int) {
         // get the buttons to add
         let buttonList:[String] = gameTurns[currentTurn].buttons
         var degrees = [Double]()
         var delays = [0, 0.2, 0.4]
-        let centerPoint = note.holder.convert(note.center, to: noteScroll)
+        let centerPoint = note.center
         let topSafeZone = sH*0.3
         let bottomSafeZone = sH*0.7
         if centerPoint.y < topSafeZone {
@@ -515,13 +433,13 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
             
             let sizeVarient = CGFloat.random(in: 0 ..< 0.6)
             let a:Double = (degrees[i]) * Double.pi / 180
-            let r:Double = Double(noteStave.staveScale * 2.8+sizeVarient)
+            let r:Double = Double(noteStave.gapSize * 2.8+sizeVarient)
             
             let xpoint = CGFloat(Double(centerPoint.x) + r*cos(a))
             let ypoint = CGFloat(Double(centerPoint.y) + r*sin(a))
             
-            let testButton = NoteButton(diameter: noteStave.staveScale * 2+sizeVarient, colour: randomColour(), labelText: button, tag: 0)
-            let testButtonBG = NoteButtonsBG(diameter: noteStave.staveScale * 2+sizeVarient)
+            let testButton = NoteButton(diameter: noteStave.gapSize * 2+sizeVarient, colour: randomColour(), labelText: button, tag: 0)
+            let testButtonBG = NoteButtonsBG(diameter: noteStave.gapSize * 2+sizeVarient)
             
             testButton.center = CGPoint(x: xpoint, y: ypoint)
             testButtonBG.center = CGPoint(x: xpoint, y: ypoint)
@@ -541,7 +459,7 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
         
         
     }
-    
+    /*
     func moveClefs(){
         if usrInf.prefStave == "grand" {
             let clefX = noteStave.trebleClef
@@ -567,29 +485,22 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
         }
         
     }
-    
     func undoMoveClefs(){
         for note in notesOnStave {
             UIView.animate(withDuration: 1, animations: {
                 note.alpha = 1
             }, completion: nil)
         }
-        if usrInf.prefStave == "grand" {
-            UIView.animate(withDuration: 1, delay:0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                self.noteStave.trebleClef.frame.origin.x = self.noteStave.trebleClefOriginalPos
-                self.noteStave.bassClef.frame.origin.x = self.noteStave.trebleClefOriginalPos
-            }, completion: nil)
-            UIView.animate(withDuration: 1, animations: {
-                self.noteStave.timeSig1.alpha = 1
-                self.noteStave.timeSig2.alpha = 1
-                if self.currentTurn > 2 {
-                    self.notesOnStave[self.currentTurn-2].alpha = 0
-                }
-                
-            }, completion: nil)
-        }
+        UIView.animate(withDuration: 1, animations: {
+            self.noteStave.timeSig1.alpha = 1
+            self.noteStave.timeSig2.alpha = 1
+            if self.currentTurn > 2 {
+                self.notesOnStave[self.currentTurn-2].alpha = 0
+            }
+            
+        }, completion: nil)
     }
-    
+    */
     @objc public func closeMenu(_ sender:UITapGestureRecognizer){
         
         if sender.state == .ended {
@@ -658,14 +569,11 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
         startTurn(turn: currentTurn, action: "first")
     }
     
-    func addFlair(targetNote: Note, outcome: String, noteStreak: Int){
+    func addFlair(targetNote: Note2, outcome: String, noteStreak: Int){
         let newFlair = NoteFlair(note: targetNote, outcome: outcome, noteStreak: usrInf.noteStreak)
-        var bassClefStave:UIView = noteStave.topStave
-        if usrInf.prefStave == "grand" {
-            bassClefStave = noteStave.bottomStave
-        }
+        var bassClefStave:UIView = noteStave
         if targetNote.stave == "treble" {
-            noteStave.topStave.addSubview(newFlair)
+            noteStave.addSubview(newFlair)
         } else {
             bassClefStave.addSubview(newFlair)
         }
@@ -722,8 +630,8 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
         
     }
     
-    func scrollStave(to: Note, turn: Int, action: String){
-        let absoluteX = to.holder.convert(to.center, to: noteScroll)
+    func scrollStave(to: Note2, turn: Int, action: String){
+        let absoluteX = to.center
         
         if action == "scrollAndShowButtons" {
             if currentTurn == 0 {
@@ -731,7 +639,7 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
                     self.noteScroll.contentOffset.x = absoluteX.x - (sW/2)
                 }, completion: { finished in
                     if !self.changingStave { self.addButtonsToNote(note: self.notesOnStave[turn], gameTurns: self.gameTurns, turnNum: turn) }
-                    self.moveClefs()
+                    
                 })
             }
             if currentTurn > 0 && currentTurn <= numOfRounds {
@@ -739,7 +647,7 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
                     self.noteScroll.contentOffset.x = absoluteX.x - (sW/2)
                 }, completion: { finished in
                     if !self.changingStave { self.addButtonsToNote(note: self.notesOnStave[turn], gameTurns: self.gameTurns, turnNum: turn) }
-                    self.moveClefs()
+                    
                 })
             }
             if currentTurn > numOfRounds {
@@ -759,16 +667,13 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
     
     func setUpScroll(){
         //draw the staves. Update later.
-        noteStave = Stave(staveType: usrInf.prefStave, staveLength: staveLength, lineWidth: lineWidth, lineCount: lineCount, sS: sS)
-        noteScroll.addSubview(noteStave)
         
+        // (staveType: usrInf.prefStave, staveLength: staveLength, lineWidth: lineWidth, lineCount: lineCount, sS: sS)
+        noteStave = StaveView(spaceToFill: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: UIScreen.main.bounds.size.height - 20), staveType: usrInf.prefStave, noteCount: numOfRounds, spacing: "wide", showClef: true, timeSig: true)
+        noteScroll.addSubview(noteStave)
         addNotesToStave(notesToAdd: notesToAdd, lineWidth: lineWidth, lineCount: lineCount)
         
-        staveLength = findWidthOfStave(numOfNotes: notesToAdd.count, noteWidth: notesOnStave[0].noteSpacing, padding: notesOnStave[0].sfp)
-        
-        noteStave.scaleStavesToFit(staveWidth: staveLength-gapToRemoveAtEnd, staveType: usrInf.prefStave)
-        noteScroll.contentSize.width = staveLength * 1.01
-        noteStave.addEndCap(staveWidth: staveLength-gapToRemoveAtEnd)
+        noteScroll.contentSize.width = noteStave.frame.width
         noteScroll.isScrollEnabled = false
         
         topLayer.frame = CGRect(x: 0, y: 0, width: staveLength * 1.01, height: noteStave.frame.height)
@@ -844,7 +749,7 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    func addCorrectAnswer(target: Note, highlight: Highlight){
+    func addCorrectAnswer(target: Note2, highlight: Highlight){
         var humanName = "A"
         if target.stave == "treble" {
             humanName = (trebleNotes[target.note]?.humanNoteName)!
@@ -853,14 +758,14 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
             humanName = (bassNotes[target.note]?.humanNoteName)!
         }
         
-        let centerPoint = target.holder.convert(target.center, to: noteScroll)
+        let centerPoint = target.center
         
         let noteLabel = UILabel()
         noteLabel.text = "\(humanName)"
         noteLabel.textColor = UIColor.white
-        noteLabel.font = UIFont(name: "Futura-Bold", size: noteStave.staveScale)
+        noteLabel.font = UIFont(name: "Futura-Bold", size: noteStave.gapSize)
         
-        noteLabel.frame = CGRect(x: 0, y: 0, width: noteStave.staveScale, height: noteStave.staveScale)
+        noteLabel.frame = CGRect(x: 0, y: 0, width: noteStave.gapSize, height: noteStave.gapSize)
         noteLabel.center = centerPoint
         noteLabel.alpha = 0
         noteScroll.addSubview(noteLabel)
@@ -869,7 +774,7 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
         }, completion: nil)
     }
     
-    func jumpOffStave(target: Note){
+    func jumpOffStave(target: Note2){
         
         let path = UIBezierPath()
         let startPoint = target.center
@@ -1005,12 +910,12 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
     
     struct Highlight {
         var pos : Int
-        var note : Note
+        var note : Note2
         var turn : GameTurn
     }
     
     struct GameNote {
-        var note : Note
+        var note : Note2
         var stave : String
     }
     struct GameNoteToAdd {

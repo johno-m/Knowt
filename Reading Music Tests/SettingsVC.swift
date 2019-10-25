@@ -10,6 +10,8 @@ import UIKit
 
 class SettingsVC: UIViewController {
 
+    var backBtn : BackBtn!
+    
     @IBAction func resetGame(_ sender: Any) {
         deleteUserInf()
         let nextViewController = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! ViewController
@@ -19,8 +21,16 @@ class SettingsVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        backBtn = BackBtn(color: UIColor.white)
+        backBtn.addTarget(self, action: #selector(backBtnPressed), for: .touchUpInside)
+        view.addSubview(backBtn)
         // Do any additional setup after loading the view.
+    }
+    
+    @objc func backBtnPressed(_ sender:UIButton){
+        let resultViewController = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! ViewController
+        resultViewController.modalPresentationStyle = .fullScreen
+        self.present(resultViewController, animated:true, completion:nil)
     }
 
     override func didReceiveMemoryWarning() {

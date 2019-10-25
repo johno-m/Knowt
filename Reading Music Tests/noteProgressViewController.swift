@@ -14,6 +14,7 @@ class noteProgressViewController: UIViewController, UITableViewDelegate, UITable
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     var unlockedNotes : [String]!
     var unlockedNotesInOrder = [String]()
+    @IBOutlet weak var backBtn: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +22,11 @@ class noteProgressViewController: UIViewController, UITableViewDelegate, UITable
         progressTable.delegate = self
         progressTable.dataSource = self
         unlockedNotes = [String]()
+        
+        let imageSrc = UIImage(named: "backBtn")
+        let tintedImage = imageSrc?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        backBtn.setImage(tintedImage, for: .normal)
+        backBtn.tintColor = UIColor.white
         
         let allTrebleNotes = noteLevelList[usrInf.instrument]
         let allBassNotes = noteLevelList[usrInf.instrument]

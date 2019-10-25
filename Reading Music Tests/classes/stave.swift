@@ -252,7 +252,7 @@ class StaveLine : UIView {
 }
 
 
-
+/*
 class Note : SpringView {
     //625
     
@@ -351,7 +351,7 @@ class Note : SpringView {
     }
     
 }
-
+*/
 class BarLine : UIView {
     var lineY : CGFloat!
     

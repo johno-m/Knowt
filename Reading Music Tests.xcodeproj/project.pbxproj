@@ -47,6 +47,7 @@
 		7943DCAB21FE06F10039E3E5 /* noteFlair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7943DCAA21FE06F10039E3E5 /* noteFlair.swift */; };
 		7948BD2921A85E790075A49F /* DrawWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7948BD2821A85E790075A49F /* DrawWindow.swift */; };
 		7948BD2B21A860000075A49F /* drawNoteGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7948BD2A21A860000075A49F /* drawNoteGameViewController.swift */; };
+		794B58892363334000512810 /* BackBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794B58882363334000512810 /* BackBtn.swift */; };
 		794D63891F2737610034B8EA /* varStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794D63881F2737610034B8EA /* varStore.swift */; };
 		794D638B1F2773C90034B8EA /* notesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794D638A1F2773C90034B8EA /* notesViewController.swift */; };
 		794D638D1F2774A80034B8EA /* quizViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794D638C1F2774A80034B8EA /* quizViewController.swift */; };
@@ -350,6 +351,7 @@
 		7943DCAA21FE06F10039E3E5 /* noteFlair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = noteFlair.swift; sourceTree = "<group>"; };
 		7948BD2821A85E790075A49F /* DrawWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawWindow.swift; sourceTree = "<group>"; };
 		7948BD2A21A860000075A49F /* drawNoteGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = drawNoteGameViewController.swift; sourceTree = "<group>"; };
+		794B58882363334000512810 /* BackBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackBtn.swift; sourceTree = "<group>"; };
 		794D63881F2737610034B8EA /* varStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = varStore.swift; sourceTree = "<group>"; };
 		794D638A1F2773C90034B8EA /* notesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = notesViewController.swift; sourceTree = "<group>"; };
 		794D638C1F2774A80034B8EA /* quizViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = quizViewController.swift; sourceTree = "<group>"; };
@@ -906,6 +908,7 @@
 		798D0B7C21F7B06A002D05C8 /* classes */ = {
 			isa = PBXGroup;
 			children = (
+				794B58882363334000512810 /* BackBtn.swift */,
 				79EAC04323608D6E00D31E36 /* progressViewCell.swift */,
 				798D0B7D21F7B089002D05C8 /* loadsave.swift */,
 				79CB220221FE04AE0001141A /* inGameMenu.swift */,
@@ -1400,6 +1403,7 @@
 				79738E70220602830019E725 /* extensions.swift in Sources */,
 				79B57963207B696F00911CD4 /* DesignableButton.swift in Sources */,
 				7933B0181F43505800E1356D /* dev2ViewController.swift in Sources */,
+				794B58892363334000512810 /* BackBtn.swift in Sources */,
 				7962412E211CE777001D196A /* testingViewController.swift in Sources */,
 				79B57964207B696F00911CD4 /* SpringTextField.swift in Sources */,
 				79BDAE492211E57F0078B328 /* drawTitle.swift in Sources */,

@@ -24,6 +24,8 @@ class selectNotesViewController: UIViewController {
     var playBtn = PlayButton()
     var changeClefBtn = UIButton()
     
+    var backBtn : BackBtn!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.sS = UIScreen.main.bounds.size
@@ -33,7 +35,7 @@ class selectNotesViewController: UIViewController {
         
         scrollView = UIScrollView(frame: CGRect(x: 0, y: 20, width: sS.width, height: sS.height - 20))
         view.addSubview(scrollView)
-        stave = StaveView(spaceToFill: scrollView.frame, staveType: usrInf.prefStave, noteCount: trebleNotes.count, spacing: "compact", showClef: true)
+        stave = StaveView(spaceToFill: scrollView.frame, staveType: usrInf.prefStave, noteCount: trebleNotes.count, spacing: "compact", showClef: true, timeSig: false)
         scrollView.addSubview(stave)
         scrollView.contentSize = CGSize(width: stave.frame.width, height: scrollView.frame.height)
         
@@ -47,7 +49,15 @@ class selectNotesViewController: UIViewController {
         playBtn.addTarget(self, action: #selector(playAction(_:)), for: .touchUpInside)
         
         view.addSubview(playBtn)
-        
+        backBtn = BackBtn(color: UIColor.white)
+        backBtn.addTarget(self, action: #selector(backBtnPressed), for: .touchUpInside)
+        view.addSubview(backBtn)
+    }
+    
+    @objc func backBtnPressed(_ sender:UIButton){
+        let resultViewController = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! ViewController
+        resultViewController.modalPresentationStyle = .fullScreen
+        self.present(resultViewController, animated:true, completion:nil)
     }
     
     @objc func playAction(_ sender:UIButton){
@@ -61,7 +71,7 @@ class selectNotesViewController: UIViewController {
     func getNotes(staveType: String){
         if staveType == "treble" {
             for (i, note) in noteList.enumerated() {
-                var newNote = Note2(pos: i, stave: staveType, note: trebleNotes[note]!.noteName, gapSize: stave.gapSize, noteGap: stave.noteGap, stavePosition: trebleNotes[note]!.stavePosition, lineWidth: stave.lineWidth, topLine: stave.staveLineArray[0].lineY)
+                var newNote = Note2(pos: i, stave: staveType, note: trebleNotes[note]!.noteName, gapSize: stave.gapSize, noteGap: stave.noteGap, stavePosition: trebleNotes[note]!.stavePosition, lineWidth: stave.lineWidth, topLine: stave.staveLineArray[0].lineY, stp: stave.startingPos)
                 notesToAdd.append(newNote)
                 
                 let tap = selectNoteTap(target: self, action: #selector(self.handleTapFrom(recognizer:)))
@@ -223,13 +233,13 @@ class Note2 : SpringView {
     var firstStaveStep : CGFloat!
     var selected = false
     
-    init(pos: Int, stave: String, note: String, gapSize: CGFloat, noteGap: CGFloat, stavePosition: Int, lineWidth: CGFloat, topLine: CGFloat) {
+    init(pos: Int, stave: String, note: String, gapSize: CGFloat, noteGap: CGFloat, stavePosition: Int, lineWidth: CGFloat, topLine: CGFloat, stp: CGFloat) {
         let noteHeight = gapSize * 6.25
         /** Each step on the stave **/
         let staveSteps = gapSize / 2
         let noteSize = CGSize(width: (noteHeight / 932) * 189, height: noteHeight)
         /** sfp is the gap at the beginning of the stave **/
-        sfp = noteGap * 2
+        self.sfp = stp
     
         self.firstStaveStep = topLine - (staveSteps * 4)
         self.lineWidth = lineWidth
@@ -256,6 +266,8 @@ class Note2 : SpringView {
         
         // set the center point of note
         self.center = CGPoint(x: sfp + (CGFloat(pos) * noteGap), y: firstStaveStep + (CGFloat(stavePosition) * staveSteps))
+        
+        
         
     }
     

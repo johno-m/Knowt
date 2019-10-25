@@ -34,7 +34,12 @@ class StaveView : UIView {
         0.60
     ]
     
-    init(spaceToFill: CGRect, staveType: String, noteCount: Int, spacing: String, showClef: Bool){
+    var startingPos:CGFloat = 0
+    
+    var timeSig : UIImageView!
+    
+    
+    init(spaceToFill: CGRect, staveType: String, noteCount: Int, spacing: String, showClef: Bool, timeSig: Bool){
         
         self.gapSize = spaceToFill.height * 0.08
         if spacing == "compact" {
@@ -42,6 +47,8 @@ class StaveView : UIView {
         } else {
             self.noteGap = self.gapSize * 7
         }
+        
+        startingPos = gapSize * CGFloat(6)
         
         super.init(frame: CGRect(x: 0, y: 0, width: self.noteGap * CGFloat(noteCount + 3),  height: spaceToFill.height))
         
@@ -53,6 +60,20 @@ class StaveView : UIView {
         }
         
         if showClef { addClef(staveType: staveType) }
+        if timeSig {
+            addTimeSig()
+            startingPos += gapSize * 3
+        }
+    }
+    
+    func addTimeSig(){
+        print("--- ADDING TIME SIG ---")
+        let a:CGFloat = 260 / 580 //
+        let b = CGFloat(gapSize*4) * a
+        timeSig = UIImageView(frame: CGRect(x: 0, y: 0, width: b, height: gapSize*4))
+        timeSig.image = UIImage(named: "timesig2")
+        timeSig.center = CGPoint(x: gapSize*4, y: staveLineArray[2].lineY)
+        self.addSubview(timeSig)
     }
     
     func addClef(staveType: String){
@@ -77,95 +98,6 @@ class StaveView : UIView {
         super.init(coder: aDecoder)
     }
     
-    //var lineY = [CGFloat]!
-    /*
-    
-    
-    func drawStaves(){
-        var j = 0
-        staveLines1 = [StaveLine]()
-        staveLines2 = [StaveLine]()
-        
-        func drawTrebleStave(targetStave: UIView){
-            j = 0
-            for i in 4...8 {
-                
-                staveLines1.append(StaveLine(lineY: splitSize * CGFloat(i-eav), lineWidth: lineWidth, sS: sS))
-                targetStave.addSubview(staveLines1[j])
-                
-                j += 1
-            }
-        }
-        
-
-        
-    }
- */
-    /*
-    func scaleStavesToFit(staveWidth: CGFloat, staveType: String){
-        if staveType == "grand" {
-            topStave.frame.size.width = staveWidth
-            bottomStave.frame.size.width = staveWidth
-        } else {
-            topStave.frame.size.width = staveWidth
-        }
-        
-        for staveLine in staveLines1 {
-            staveLine.frame.size.width = staveWidth
-        }
-        for staveLine in staveLines2 {
-            staveLine.frame.size.width = staveWidth
-        }
-    }
-    
-    func addEndCap(staveWidth: CGFloat){
-        
-        if self.staveType == "grand" {
-            
-            //this adds endcap
-            
-            let endCap2 = UIView()
-            let endCapWidth = self.staveScale * 0.3
-            let endCapHeight = self.staveScale * 4
-            endCap2.frame = CGRect(x: staveWidth - endCapWidth, y: 0, width: endCapWidth, height: endCapHeight)
-            endCap2.backgroundColor = UIColor.black
-            endCap2.center.y = self.staveScale * CGFloat(5 - eav)
-            bottomStave.addSubview(endCap2)
-            
-        }
-        
-        let endCap = UIView()
-        let endCapWidth = self.staveScale * 0.3
-        let endCapHeight = self.staveScale * 4
-        endCap.frame = CGRect(x: staveWidth - endCapWidth, y: 0, width: endCapWidth, height: endCapHeight)
-        endCap.backgroundColor = UIColor.black
-        endCap.center.y = self.staveScale * CGFloat(6 - eav)
-        topStave.addSubview(endCap)
-        
-        if self.staveType == "bass" {
-            endCap.center.y = self.staveScale * CGFloat(5 - eav)
-        }
-        
-    }
-    
-    
-    func addGrandBrace(){
-        let braceLine = UIView()
-        let braceCurl = UIImageView(image: UIImage(named: "braceCurl"))
-        let top = topStave.convert(staveLines1[0].frame, to: self)
-        let bottom = bottomStave.convert(staveLines2[4].frame, to: self)
-        let lineHeight = bottom.origin.y - top.origin.y
-        
-        braceLine.frame = CGRect(x: top.origin.x, y: top.origin.y, width: lineWidth, height: lineHeight)
-        braceLine.backgroundColor = UIColor.black
-        self.addSubview(braceLine)
-        
-        //brace curl - 164 × 1274
-        let braceCurlX = braceLine.frame.origin.x - ((braceLine.frame.height/1274)*164)
-        braceCurl.frame = CGRect(x: braceCurlX, y: braceLine.frame.origin.y, width: (braceLine.frame.height/1274)*164, height: braceLine.frame.height)
-        self.addSubview(braceCurl)
-    }
-    */
 }
 
 class StaveLine2 : UIView {
