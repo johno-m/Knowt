@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		79003F00236DD361006CAE72 /* TutorialMultiImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79003EFF236DD361006CAE72 /* TutorialMultiImage.swift */; };
 		790331341F2B9D8300B4CFFF /* notesTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790331331F2B9D8300B4CFFF /* notesTutorialViewController.swift */; };
 		790331361F2B9DB900B4CFFF /* notesSplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790331351F2B9DB900B4CFFF /* notesSplashViewController.swift */; };
 		790331381F2E806F00B4CFFF /* notesEndViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790331371F2E806F00B4CFFF /* notesEndViewController.swift */; };
@@ -304,6 +305,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		79003EFF236DD361006CAE72 /* TutorialMultiImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialMultiImage.swift; sourceTree = "<group>"; };
 		790331331F2B9D8300B4CFFF /* notesTutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = notesTutorialViewController.swift; sourceTree = "<group>"; };
 		790331351F2B9DB900B4CFFF /* notesSplashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = notesSplashViewController.swift; sourceTree = "<group>"; };
 		790331371F2E806F00B4CFFF /* notesEndViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = notesEndViewController.swift; sourceTree = "<group>"; };
@@ -914,6 +916,7 @@
 				79CB220221FE04AE0001141A /* inGameMenu.swift */,
 				79CB220421FE05180001141A /* stave.swift */,
 				799191FF234A78610044E9BD /* StaveView.swift */,
+				79003EFF236DD361006CAE72 /* TutorialMultiImage.swift */,
 				7943DCAA21FE06F10039E3E5 /* noteFlair.swift */,
 				79738E6D2204983E0019E725 /* noteStreakStar.swift */,
 				79738E6F220602830019E725 /* extensions.swift */,
@@ -1431,6 +1434,7 @@
 				79F83AC1204810C800778DAB /* SettingsTableVC.swift in Sources */,
 				7948BD2B21A860000075A49F /* drawNoteGameViewController.swift in Sources */,
 				79AF82DC215F8771002F28CD /* selectNotesViewController.swift in Sources */,
+				79003F00236DD361006CAE72 /* TutorialMultiImage.swift in Sources */,
 				79391C9E203C330600CC8C66 /* settingsDetail3ViewController.swift in Sources */,
 				79B5795F207B696F00911CD4 /* SpringButton.swift in Sources */,
 				790A62041F250D0600E4C422 /* ViewController.swift in Sources */,

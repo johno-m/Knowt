@@ -337,6 +337,11 @@ class gameViewController: UIViewController, UIScrollViewDelegate {
             notesInGame[note.key]!.noteWeight = 100 - notesInGame[note.key]!.notePerc
             print("Note \(note.key) notePerc = \(notesInGame[note.key]!.notePerc)")
             print("Note \(note.key) noteWeight = \(notesInGame[note.key]!.noteWeight)")
+            if notesInGame[note.key]!.noteWeight > 0 {
+                
+            } else {
+                notesInGame[note.key]!.noteWeight = 100
+            }
         }
         
         for note in notesInGame {

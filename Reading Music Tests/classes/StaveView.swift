@@ -39,7 +39,7 @@ class StaveView : UIView {
     var timeSig : UIImageView!
     
     
-    init(spaceToFill: CGRect, staveType: String, noteCount: Int, spacing: String, showClef: Bool, timeSig: Bool){
+    init(spaceToFill: CGRect, staveType: String, noteCount: Int, spacing: String, showClef: Bool, timeSig: Bool, fixedWidth: Bool? = false){
         
         self.gapSize = spaceToFill.height * 0.08
         if spacing == "compact" {
@@ -50,11 +50,17 @@ class StaveView : UIView {
         
         startingPos = gapSize * CGFloat(6)
         
-        super.init(frame: CGRect(x: 0, y: 0, width: self.noteGap * CGFloat(noteCount + 3),  height: spaceToFill.height))
+        var setWidth = self.noteGap * CGFloat(noteCount + 3)
+        if fixedWidth! {
+            setWidth = spaceToFill.width
+        }
+            
+        
+        super.init(frame: CGRect(x: spaceToFill.minX, y: spaceToFill.minY, width: setWidth,  height: spaceToFill.height))
         
         self.lineWidth = spaceToFill.height * 0.008
         for (i, point) in singleStaveY.enumerated() {
-            let staveLine = StaveLine2(lineY: (spaceToFill.height * point), lineWidth: lineWidth, length: self.frame.width)
+            let staveLine = StaveLine2(lineY: (spaceToFill.height * point), lineWidth: lineWidth, length: setWidth)
             staveLineArray.append(staveLine)
             self.addSubview(staveLineArray[i])
         }

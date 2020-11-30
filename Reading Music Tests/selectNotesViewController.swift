@@ -33,7 +33,7 @@ class selectNotesViewController: UIViewController {
         bg.image = UIImage(named: "noteSelectBG")
         view.addSubview(bg)
         
-        scrollView = UIScrollView(frame: CGRect(x: 0, y: 20, width: sS.width, height: sS.height - 20))
+        scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: sS.width, height: sS.height))
         view.addSubview(scrollView)
         stave = StaveView(spaceToFill: scrollView.frame, staveType: usrInf.prefStave, noteCount: trebleNotes.count, spacing: "compact", showClef: true, timeSig: false)
         scrollView.addSubview(stave)

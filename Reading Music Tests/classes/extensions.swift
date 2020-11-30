@@ -76,3 +76,39 @@ func checkPromotionCriteria(stave: String) -> Bool {
     return result
 }
 
+extension UIColor {
+    func interpolateRGBColorTo(_ end: UIColor, fraction: CGFloat) -> UIColor? {
+        let f = min(max(0, fraction), 1)
+
+        guard let c1 = self.cgColor.components, let c2 = end.cgColor.components else { return nil }
+
+        let r: CGFloat = CGFloat(c1[0] + (c2[0] - c1[0]) * f)
+        let g: CGFloat = CGFloat(c1[1] + (c2[1] - c1[1]) * f)
+        let b: CGFloat = CGFloat(c1[2] + (c2[2] - c1[2]) * f)
+        let a: CGFloat = CGFloat(c1[3] + (c2[3] - c1[3]) * f)
+
+        return UIColor(red: r, green: g, blue: b, alpha: a)
+    }
+}
+
+func hex(hex:String) -> UIColor {
+    var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+
+    if (cString.hasPrefix("#")) {
+        cString.remove(at: cString.startIndex)
+    }
+
+    if ((cString.characters.count) != 6) {
+        return UIColor.gray
+    }
+
+    var rgbValue:UInt32 = 0
+    Scanner(string: cString).scanHexInt32(&rgbValue)
+
+    return UIColor(
+        red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+        green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+        blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+        alpha: CGFloat(1.0)
+    )
+}
